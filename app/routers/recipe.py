@@ -9,7 +9,8 @@ from crud.recipe import create_recipe, get_recipe, get_recipes, get_recipes_by_a
 from routers.auth import get_current_user
 from models.user import User
 from models.recipe import Recipe
-
+from schemas.recipe import RecipeUpdate
+from crud.recipe import update_recipe
 router = APIRouter()
 
 def get_db():
@@ -76,3 +77,19 @@ def delete_recipe(
 @router.get('/users/{user_id}/recipes', response_model=List[RecipeOut])
 def read_user_recipes(user_id: int, db: Session = Depends(get_db)):
     return get_recipes_by_author(db, user_id)
+
+
+
+@router.put("/recipes/{recipe_id}", response_model=RecipeOut)
+def update_recipe_route(
+    recipe_id: int,
+    recipe_in: RecipeUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    recipe = db.query(Recipe).get(recipe_id)
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Рецепт не найден")
+    if recipe.author_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Нет прав на редактирование")
+    return update_recipe(db, recipe, recipe_in.dict(exclude_unset=True))

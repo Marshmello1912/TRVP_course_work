@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 from schemas.media import MediaOut
 from schemas.comment import CommentOut
@@ -23,3 +23,9 @@ class RecipeOut(RecipeBase):
 
     class Config:
         orm_mode = True
+
+class RecipeUpdate(BaseModel):
+    title: Optional[str]
+    description: Optional[str]
+    ingredients: Optional[List[str]]
+    steps: Optional[List[str]]

@@ -11,13 +11,12 @@ export default function HomePage() {
     const [hasMore, setHasMore]   = useState(false);
     const limit = 10;
 
-    // Загрузка карточек
-    const loadRecipes = async () => {
+    // Загрузка карточек, принимает override для skip
+    const loadRecipes = async (skipParam = skip) => {
         setLoading(true);
         try {
-            const { data } = await fetchRecipes({ skip, limit, query, sort });
-            setRecipes(prev => skip === 0 ? data : [...prev, ...data]);
-            // Если пришло ровно limit элементов — есть, что догружать
+            const { data } = await fetchRecipes({ skip: skipParam, limit, query, sort });
+            setRecipes(prev => skipParam === 0 ? data : [...prev, ...data]);
             setHasMore(data.length === limit);
         } catch (err) {
             console.error(err);
@@ -26,20 +25,29 @@ export default function HomePage() {
         }
     };
 
-    // Когда меняется skip (или можно добавить query/sort), грузим снова
-    useEffect(() => { loadRecipes(); }, [skip]);
+    // Подгружаем при изменении skip (infinite scroll)
+    useEffect(() => {
+        loadRecipes();
+    }, [skip]);
 
+    // Обработчик поиска
     const onSearch = e => {
         e.preventDefault();
-        setSkip(0);  // сбросим пагинацию
+        // Сброс страницы на первую
+        setSkip(0);
+        // Очищаем прежние результаты и загружаем с нуля
+        setRecipes([]);
+        loadRecipes(0);
     };
+
     const loadMore = () => setSkip(prev => prev + limit);
 
     return (
         <div className="pt-5 mt-4">
             <div className="container">
-                <h1 className="text-center mb-5" style={{color: "aliceblue"}}>Кулинарная соцсеть</h1>
+                <h1 className="text-center mb-5" >Кулинарная соцсеть</h1>
 
+                {/* Поиск */}
                 <div className="d-flex justify-content-center mb-5">
                     <form onSubmit={onSearch} className="row g-2 w-100" style={{ maxWidth: '800px' }}>
                         <div className="col-12 col-md-6">
@@ -69,6 +77,7 @@ export default function HomePage() {
                     </form>
                 </div>
 
+                {/* Результаты */}
                 {loading && skip === 0 ? (
                     <p className="text-center text-muted">Загрузка…</p>
                 ) : (
@@ -81,7 +90,7 @@ export default function HomePage() {
                     </div>
                 )}
 
-                {/* Кнопка «Загрузить ещё» если ещё есть */}
+                {/* Кнопка «Загрузить ещё» */}
                 {!loading && hasMore && (
                     <div className="d-flex justify-content-center my-5">
                         <button className="btn btn-success" onClick={loadMore}>

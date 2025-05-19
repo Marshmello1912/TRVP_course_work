@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function NavBar() {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
-
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const handleLogout = async () => {
         await logout();
         navigate('/login');
@@ -36,7 +37,7 @@ export default function NavBar() {
                 </ul>
 
                 <ul className="nav ms-auto">
-                {user ? (
+                    {user ? (
                         <li className="nav-item">
                             <button
                                 className="btn btn-outline-danger"
@@ -56,6 +57,9 @@ export default function NavBar() {
                         </>
                     )}
                 </ul>
+                <button className="btn btn-outline-secondary" onClick={toggleTheme}>
+                    {theme === 'darkly' ? 'Светлая тема' : 'Тёмная тема'}
+                </button>
             </div>
         </nav>
     );

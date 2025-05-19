@@ -12,6 +12,7 @@ import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import StatsPage from "./pages/StatsPage.jsx";
 import FavoritesPage from "./pages/FavoritesPage.jsx";
+import EditRecipePage from "./pages/EditRecipePage.jsx";
 
 function PrivateRoute({ children }) {
     const { user, loading } = useContext(AuthContext);
@@ -49,6 +50,7 @@ export default function App() {
                         </PrivateRoute>
                     }
                 />
+                <Route path="/recipes/:id/edit" element={<PrivateRoute><EditRecipePage/></PrivateRoute>} />
             </Routes>
 
             </main>

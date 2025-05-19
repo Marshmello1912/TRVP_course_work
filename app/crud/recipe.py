@@ -43,3 +43,11 @@ def get_recipes(
 
 def get_recipes_by_author(db: Session, author_id: int):
     return db.query(Recipe).filter(Recipe.author_id == author_id).all()
+
+def update_recipe(db: Session, recipe: Recipe, update_data: dict):
+    for field, value in update_data.items():
+        if value is not None:
+            setattr(recipe, field, value)
+    db.commit()
+    db.refresh(recipe)
+    return recipe

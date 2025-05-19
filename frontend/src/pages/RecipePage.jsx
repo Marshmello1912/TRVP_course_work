@@ -139,6 +139,14 @@ export default function RecipePage() {
                     </button>
                 </div>
             )}
+            {isAuthor && (
+                <div className="mb-3">
+                    <Link to={`/recipes/${recipe.id}/edit`} className="btn btn-warning me-2">
+                        ✏️ Редактировать
+                    </Link>
+                </div>
+            )}
+
             {/* Описание */}
             <p className="lead">{recipe.description}</p>
 
