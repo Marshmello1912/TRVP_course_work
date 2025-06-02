@@ -10,7 +10,7 @@ from routers.stats import router as stats_router
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5433"],
+    allow_origins=["http://localhost:7654"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

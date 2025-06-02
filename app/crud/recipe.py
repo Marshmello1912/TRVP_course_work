@@ -22,22 +22,19 @@ def get_recipe(db: Session, recipe_id: int):
     return db.query(Recipe).filter(Recipe.id == recipe_id).first()
 
 
-def get_recipes(
-    db: Session,
-    skip: int = 0,
-    limit: int = 10,
-    sort: str = 'rating',
-    query: str = None
-):
+from sqlalchemy import func
+
+def get_recipes(db: Session, skip=0, limit=10, sort="rating", query=None):
     q = db.query(Recipe)
+
     if query:
         q = q.filter(Recipe.title.ilike(f"%{query}%"))
-    if sort == 'rating':
-        # join ratings and calculate avg
-        q = q.outerjoin(Recipe.ratings).group_by(Recipe.id)
-        q = q.order_by(func.coalesce(func.avg(Recipe.ratings.property.mapper.class_.score), 0).desc())
-    else:
+
+    if sort == "rating":
+        q = q.order_by(Recipe.rating.desc())
+    elif sort == "date":
         q = q.order_by(Recipe.created_at.desc())
+
     return q.offset(skip).limit(limit).all()
 
 

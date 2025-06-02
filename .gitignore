@@ -1,0 +1,14 @@
+
+app/.idea/
+
+app/__pycache__/
+
+app/crud/__pycache__/
+
+app/routers/__pycache__/
+
+app/models/__pycache__/
+
+app/db/__pycache__/
+
+app/.venv/

@@ -58,6 +58,6 @@ def get_recipe_stats(
     )
 
     return {
-        "likes": [{"date": d.isoformat(), "value": int(v)} for d, v in likes],
-        "comments": [{"date": d.isoformat(), "value": int(v)} for d, v in comments],
+        "likes": [{"date": d if isinstance(d, str) else d.isoformat(), "value": int(v)} for d, v in likes],
+        "comments": [{"date": d if isinstance(d, str) else d.isoformat(), "value": int(v)} for d, v in comments],
     }

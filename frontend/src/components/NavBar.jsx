@@ -11,14 +11,17 @@ export default function NavBar() {
         await logout();
         navigate('/login');
     };
-
+    const resetSearch = () => {
+    setQuery('');
+    setSkip(0);
+};
     return (
         <nav className="navbar navbar-dark bg-dark fixed-top shadow-sm">
             <div className="container">
-                <Link className="navbar-brand" to="/">Кулинарка</Link>
+                <Link className="navbar-brand" to="/" onClick={resetSearch}>Кулинарка</Link>
                 <ul className="nav">
                     <li className="nav-item">
-                        <Link className="nav-link" to="/">Главная</Link>
+                        <Link className="nav-link" to="/" onClick={resetSearch}>Главная</Link>
                     </li>
 
                     {user && (
@@ -57,7 +60,7 @@ export default function NavBar() {
                         </>
                     )}
                 </ul>
-                <button className="btn btn-outline-secondary" onClick={toggleTheme}>
+                <button className="btn btn-outline-lightly bg-" onClick={toggleTheme}>
                     {theme === 'darkly' ? 'Светлая тема' : 'Тёмная тема'}
                 </button>
             </div>

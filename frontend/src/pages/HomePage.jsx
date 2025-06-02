@@ -10,6 +10,10 @@ export default function HomePage() {
     const [skip, setSkip]         = useState(0);
     const [hasMore, setHasMore]   = useState(false);
     const limit = 10;
+    const resetSearch = () => {
+    setQuery('');
+    setSkip(0);
+};
 
     // Загрузка карточек, принимает override для skip
     const loadRecipes = async (skipParam = skip) => {
