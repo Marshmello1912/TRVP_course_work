@@ -11,6 +11,7 @@ export default function HomePage() {
     const [hasMore, setHasMore]   = useState(false);
     const limit = 10;
 
+
     // Загрузка карточек, принимает override для skip
     const loadRecipes = async (skipParam = skip) => {
         setLoading(true);

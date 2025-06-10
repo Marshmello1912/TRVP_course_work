@@ -153,12 +153,12 @@ export default function EditRecipePage() {
 
                 <div className="mb-3">
                     <label className="form-label">Добавить изображение</label>
-                    <input type="file" className="form-control" onChange={e => setImageFile(e.target.files[0])}/>
+                    <input type="file"  accept="image/*" className="form-control" onChange={e => setImageFile(e.target.files[0])}/>
                 </div>
 
                 <div className="mb-3">
                     <label className="form-label">Добавить видео</label>
-                    <input type="file" className="form-control" onChange={e => setVideoFile(e.target.files[0])}/>
+                    <input type="file" accept="video/*" className="form-control" onChange={e => setVideoFile(e.target.files[0])}/>
                 </div>
 
                 <button className="btn btn-success w-100">Сохранить</button>

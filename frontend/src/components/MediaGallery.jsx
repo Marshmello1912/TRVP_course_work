@@ -16,7 +16,7 @@ export default function MediaGallery({ media }) {
                 images.map((m, i) => (
                     <div key={i} className="d-flex justify-content-center mb-3">
                         <img
-                            src={`${API_URL}${m.url}`}
+                            src={`${API_URL}${m.url}?timestamp=${Date.now()}`}
                             alt=""
                             style={{
                                 width: '500px',
@@ -44,7 +44,7 @@ export default function MediaGallery({ media }) {
             {videos.map((m, i) => (
                 <div key={i} className="d-flex justify-content-center mb-3">
                     <video
-                        src={`${API_URL}${m.url}`}
+                        src={`${API_URL}${m.url}?timestamp=${Date.now()}`}
                         width="500"
                         controls
                     />

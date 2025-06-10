@@ -1,6 +1,7 @@
 import {Routes, Route, Navigate} from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState, useEffect} from 'react';
 import { AuthContext } from './context/AuthContext';
+import { ThemeContext } from './context/ThemeContext.jsx';
 
 import HomePage     from './pages/HomePage.jsx';
 import RecipePage   from './pages/RecipePage.jsx';
@@ -21,6 +22,8 @@ function PrivateRoute({ children }) {
 }
 
 export default function App() {
+    const { theme, toggleTheme } = useContext(ThemeContext); // <-- вот это главное
+
     return (
         <>
             <NavBar />
@@ -41,7 +44,7 @@ export default function App() {
                         </PrivateRoute>
                     }
                 />
-                <Route path="/recipes/:id/stats" element={<StatsPage />} />
+                <Route path="/recipes/:id/stats" element={<StatsPage theme={theme} />} />
                 <Route
                     path="/favorites"
                     element={
@@ -51,6 +54,7 @@ export default function App() {
                     }
                 />
                 <Route path="/recipes/:id/edit" element={<PrivateRoute><EditRecipePage/></PrivateRoute>} />
+                
             </Routes>
 
             </main>
