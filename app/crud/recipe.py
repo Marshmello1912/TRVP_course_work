@@ -4,19 +4,18 @@ from models.recipe import Recipe
 from schemas.recipe import RecipeCreate
 
 
-def create_recipe(db: Session, recipe: RecipeCreate, author_id: int):
-    db_recipe = Recipe(
-        title=recipe.title,
-        description=recipe.description,
-        ingredients=recipe.ingredients,
-        steps=recipe.steps,
-        author_id=author_id
+def create_recipe(db: Session, recipe_data: RecipeCreate, user_id: int):
+    new_recipe = Recipe(
+        title=recipe_data.title.lower(),  # сохранить в lowercase
+        description=recipe_data.description,
+        author_id=user_id,
+        ingredients=recipe_data.ingredients,
+        steps=recipe_data.steps,
     )
-    db.add(db_recipe)
+    db.add(new_recipe)
     db.commit()
-    db.refresh(db_recipe)
-    return db_recipe
-
+    db.refresh(new_recipe)
+    return new_recipe
 
 def get_recipe(db: Session, recipe_id: int):
     return db.query(Recipe).filter(Recipe.id == recipe_id).first()
@@ -28,7 +27,7 @@ def get_recipes(db: Session, skip=0, limit=10, sort="rating", query=None):
     q = db.query(Recipe)
 
     if query:
-        q = q.filter(Recipe.title.ilike(f"%{query}%"))
+        q = q.filter(Recipe.title.ilike(f"%{query.lower()}%"))
 
     if sort == "rating":
         q = q.order_by(Recipe.rating.desc())

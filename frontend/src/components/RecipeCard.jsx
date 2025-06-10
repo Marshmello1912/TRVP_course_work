@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
+function toTitleCase(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
 export default function RecipeCard({ recipe }) {
     const img = recipe.media.find(m => m.media_type === 'image');
 
@@ -10,7 +12,7 @@ export default function RecipeCard({ recipe }) {
             <div className="card h-100 shadow-sm">
                 {img ? (
                     <img
-                        src={`${API_URL}${img.url}`}
+                        src={`${API_URL}${img.url}?timestamp=${Date.now()}`}
                         className="card-img-top"
                         alt={recipe.title}
                         style={{ height: '200px', objectFit: 'cover' }}
@@ -24,7 +26,7 @@ export default function RecipeCard({ recipe }) {
                     />
                 )}
                 <div className="card-body d-flex flex-column">
-                    <h5 className="card-title">{recipe.title}</h5>
+                    <h5 className="card-title">{toTitleCase(recipe.title)}</h5>
                     <p className="card-text mt-auto">Рейтинг: {recipe.rating.toFixed(1)}</p>
                     <Link to={`/recipes/${recipe.id}`} className="stretched-link" />
                 </div>

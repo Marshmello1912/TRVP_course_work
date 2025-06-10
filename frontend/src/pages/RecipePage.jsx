@@ -8,20 +8,23 @@ import {
     deleteRecipe,
     addFavorite,
     removeFavorite,
-    fetchFavorites
+    fetchFavorites, fetchRating
 } from '../api';
 import { AuthContext } from '../context/AuthContext';
 import MediaGallery from '../components/MediaGallery';
 import RatingControls from '../components/RatingControls';
 import CommentSection from '../components/CommentSection';
 
+function toTitleCase(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
 export default function RecipePage() {
 
     const { id } = useParams();
     const { user } = useContext(AuthContext);
     const [recipe, setRecipe] = useState(null);
     const navigate = useNavigate();
-
+    const [userRating, setUserRating] = useState(0);
     const [isFav, setIsFav] = useState(false);
     const [loadingFav, setLoadingFav] = useState(true);
 
@@ -30,6 +33,7 @@ export default function RecipePage() {
         try {
             const { data } = await fetchRecipe(id);
             setRecipe(data);
+
         } catch (e) {
             console.error(e);
         }
@@ -50,6 +54,19 @@ export default function RecipePage() {
             setLoadingFav(false);
         }
     };
+
+    const loadRateStatus = async () => {
+        if (!user) {
+            return;
+        }
+        try {
+            const { data } = await fetchRating(id);
+            setUserRating(data.score);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     useEffect(() => {
         loadRecipe();
     }, [id]);
@@ -57,11 +74,17 @@ export default function RecipePage() {
     // Как только рецепт подтянулся, проверяем isFav
     useEffect(() => {
         loadFavStatus();
+        loadRateStatus()
     }, [recipe, user]);
 
     const onRate = async score => {
-        await rateRecipe(id, score);
-        loadRecipe();
+        // если пользователь уже поставил такую оценку — снимаем её
+        const actualScore = userRating === score ? 0 : score;
+        await rateRecipe(id, actualScore);
+
+        // обновим рейтинг и состояние
+        await loadRecipe();
+        setUserRating(actualScore);
     };
     const onComment = async text => {
         await commentRecipe(id, text);
@@ -102,6 +125,7 @@ export default function RecipePage() {
     const isAuthor = user && user.id === recipe.author_id;
 
     return (
+
         <div className="container pt-5 mt-5 mb-5">
             {/* Навигация */}
             <div className="mb-3">
@@ -110,9 +134,9 @@ export default function RecipePage() {
             </div>
 
             {/* Заголовок */}
-            <h1 className="mb-3">{recipe.title}</h1>
-
+            <h1 className="mb-3">{toTitleCase(recipe.title)}</h1>
             {/* Кнопка «Статистика» только для автора */}
+
             {isAuthor && (
                 <div className="mb-4">
                     <Link
@@ -175,8 +199,10 @@ export default function RecipePage() {
 
             {/* Кнопки оценки */}
             <div className="mt-4 mb-4">
+
                 <RatingControls
                     rating={recipe.rating}
+                    userRating={userRating}
                     onRate={onRate}
                 />
             </div>

@@ -36,3 +36,5 @@ export const fetchFavorites    = () => api.get(`/favorites`);
 export const updateRecipe = (id, payload) =>
     api.put(`/recipes/${id}`, payload);
 
+export const fetchRating   = id  => api.get(`/ratings/${id}`);
+
